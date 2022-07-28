@@ -1,0 +1,222 @@
+<html>
+<head>
+
+<style>
+body {
+  font-family: monospace;
+  font-size: 14px;
+}
+li > a {
+  display: block;
+  margin: 6px 0 6px 2em;
+}
+input {
+  border: none;
+  padding: 0 0 6px 0;
+  outline: none;
+  background-image:
+    repeating-linear-gradient(to bottom, white, white 13px, black 14px);
+}
+</style>
+
+<script>
+/**
+ * A modified copy of some of the code from Exet
+ * (https://github.com/viresh-ratnakar/exet).
+ */
+let xlufzSelect;
+let xlufzKeyword;
+let xlufzJighlight;
+
+xlufzNav = function() {
+  let url = xlufzSelect.value;
+  if (!url) {
+    return;
+  }
+  xlufzKeyword.value = xlufzKeyword.value.trim();
+  if (!xlufzKeyword.value) {
+    xlufzHighlight.value = 'none';
+  } else {
+    if (xlufzHighlight.value == 'none') {
+      xlufzHighlight.value = 'ml=';
+    }
+  }
+  if (!xlufzKeyword.value || xlufzHighlight.value == 'none') {
+    return;
+  }
+  let datamuseParam = xlufzKeyword.value;
+  if (xlufzHighlight.value) {
+    datamuseParam = xlufzHighlight.value +
+                    encodeURIComponent(xlufzKeyword.value);
+  }
+  url = 'xlufz.php?srcurl=' +
+        encodeURIComponent(url) + '&max=1000&' + datamuseParam;
+  window.open(url, '_blank');
+}
+
+xlufzMakeMenus = function() {
+  const inds = [
+    {name: "Select web page to apply Xlufz to:", url: ""},
+    {name: "separator"},
+    {name: "Crossword Unclued's anagram indicators",
+     url: "https://www.crosswordunclued.com/2008/09/anagram-indicators.html"},
+    {name: "Crossword Unclued's hidden words indicators",
+     url: "https://www.crosswordunclued.com/2009/03/" +
+          "hidden-word-indicators.html"},
+    {name: "Crossword Unclued's reversal indicators",
+     url: "https://www.crosswordunclued.com/2009/07/reversal-indicators.html"},
+    {name: "Crossword Unclued's homophone indicators",
+     url: "https://www.crosswordunclued.com/2009/02/homophone-indicators.html"},
+    {name: "separator"},
+    {name: "Highlight Press's deletion and letter-picking indicators",
+     url: "https://www.highlightpress.com.au/subtractions.html"},
+    {name: "Crossword Unclued's deletion indicators",
+     url: "https://www.crosswordunclued.com/2009/04/deletion-indicators.html"},
+    {name: "Crossword Unclued's letter-picking indicators",
+     url: "https://www.crosswordunclued.com/2009/04/" +
+          "letter-sequence-indicators.html"},
+    {name: "Highlight Press's containment indicators",
+     url: "https://www.highlightpress.com.au/containers.html"},
+    {name: "Crossword Unclued's containment indicators",
+     url: "https://www.crosswordunclued.com/2009/02/" +
+          "container-and-content-indicators.html"},
+    {name: "separator"},
+    {name: "Crossword Unclued's list of abbreviations",
+     url: "https://www.crosswordunclued.com/2008/10/" +
+          "cryptic-abbreviations.html"},
+    {name: "Wikipedia's list of abbreviations",
+     url: "https://en.wikipedia.org/wiki/Crossword_abbreviations"},
+    {name: "Mythic beasts list of abbreviations",
+     url: "http://sphinx.mythic-beasts.com/~mark/random/indicators/"},
+    {name: "separator"},
+    {name: "All indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data?sql=select+%2A+from+indicators_consolidated&_hide_sql=1"},
+    {name: "Anagram indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=anagram"},
+    {name: "Hidden word indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=hidden"},
+    {name: "Reversal indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=reversal"},
+    {name: "Homophone indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=homophone"},
+    {name: "Container indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=container"},
+    {name: "Insertion indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=insertion"},
+    {name: "Deletion indicators from cryptics.georgeho.org",
+     url: "https://cryptics.georgeho.org/data/indicators?wordplay=deletion"},
+  ];
+  const highlighters = [
+    {name:
+        "Choose keyword's relationship to the web page's words to highlight:",
+        key: "none"},
+    {name: "Highlight words related to (Datamuse API param: ml=):", key: "ml="},
+    {name: "Highlight words that often precede (Datamuse API param: rel_bgb=):", key: "rel_bgb="},
+    {name: "Highlight words that often follow (Datamuse API param: rel_bga=):", key: "rel_bga="},
+    {name: 'Highlight words from using the Datamuse API on this param=val:', key: ""},
+  ];
+  let html = '<select id="xlufz-select" onchange="xlufzNav()">';
+  for (let ind of inds) {
+    if (ind.name == "separator") {
+      html = html + '\n<option disabled>----------</option>'
+      continue;
+    }
+    html = html + `
+    <option value="${ind.url}">${ind.name}</option>`
+  }
+  html += '</select>';
+  html += '&nbsp;<select id="xlufz-highlight" onchange="xlufzNav()">';
+  for (let hlt of highlighters) {
+    html = html + `
+    <option value="${hlt.key}">${hlt.name}</option>`
+  }
+  html += `</select>
+  <input type="text" class="xlv-answer" size="15"
+    placeholder="no keyword"
+    title="Enter a keyword and choose a highlighting category to the left"
+    onchange="xlufzNav()"
+    id='xlufz-keyword'></input>`;
+
+  const xlufzDiv = document.getElementById('xlufz');
+  xlufzDiv.innerHTML = html;
+
+  xlufzSelect = document.getElementById('xlufz-select');
+  xlufzHighlight = document.getElementById('xlufz-highlight');
+  xlufzKeyword = document.getElementById('xlufz-keyword');
+}
+
+</script>
+</head>
+<body>
+  <h2>Xlufz: A web service that highlights selected words on a web page</h2>
+
+  <p>
+  <i>
+  Use Xlufz (results open in a new tab):
+  </i>
+  </p>
+  <div id="xlufz">
+  </div>
+
+  <script>
+    xlufzMakeMenus();
+  </script>
+
+  <hr>
+
+  <p>
+  The Xlufz service can be accessed at xlufz.ratnakar.org/xlufz.php.
+  Here are some examples:
+  </p>
+
+  <ul>
+    <li>Cryptic container indicators that "mean like" <i>glass</i>:
+      <a href="http://xlufz.ratnakar.org/xlufz.php?ml=glass&max=1000&srcurl=https%3A%2F%2Fwww.highlightpress.com.au%2Fcontainers.html"><code>http://xlufz.ratnakar.org/xlufz.php?ml=glass&max=1000&srcurl=https%3A%2F%2Fwww.highlightpress.com.au%2Fcontainers.html</code></a></li>
+    <li>All published cryptic indicators related to the topic of <i>climate</i>: <a href="http://xlufz.ratnakar.org/xlufz.php?topics=climate&max=1000&srcurl=https%3A%2F%2Fcryptics.georgeho.org%2Fdata%3Fsql%3Dselect%2B%252A%2Bfrom%2Bindicators_consolidated%26_hide_sql%3D1"><code>http://xlufz.ratnakar.org/xlufz.php?topics=climate&max=1000&srcurl=https%3A%2F%2Fcryptics.georgeho.org%2Fdata%3Fsql%3Dselect%2B%252A%2Bfrom%2Bindicators_consolidated%26_hide_sql%3D1</code></a></li>
+    <li>Abbreviations of words that can be described by the adjective <i>blue</i>: <a href="http://xlufz.ratnakar.org/xlufz.php?rel_jja=blue&max=1000&srcurl=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FCrossword_abbreviations"><code>http://xlufz.ratnakar.org/xlufz.php?rel_jja=blue&max=1000&srcurl=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FCrossword_abbreviations</code></a></li>
+    <li>Anagram indicators that often precede the word <i>drink</i>: <a href="http://xlufz.ratnakar.org/xlufz.php?rel_bgb=drink&max=1000&srcurl=https%3A%2F%2Fwww.crosswordunclued.com%2F2008%2F09%2Fanagram-indicators.html"><code>http://xlufz.ratnakar.org/xlufz.php?rel_bgb=drink&max=1000&srcurl=https%3A%2F%2Fwww.crosswordunclued.com%2F2008%2F09%2Fanagram-indicators.html</code></a></li>
+  </ul>
+
+  <p>
+  This service is used by <a href="http://exet.app">Exet</a>, a free and
+  <a href="https://github.com/viresh-ratnakar/exet">open source</a> web app
+  for crossword construction, to show setters suggestions for cryptic
+  indicators related to the theme of the clue surface that they might be
+  toying with.
+  </p>
+
+  <p>
+  Xlufz is an open source project with the MIT license. It can be accessed
+  <a href="https://github.com/viresh-ratnakar/xlufz">here on
+  Github</a>.
+  </p>
+
+  <p>
+  As can be seen from the examples above, you pass the URL of the web page
+  as a URLEncoded parameter named <code>srcurl</code>. All other parameters
+  that you pass are used for word selection in the Datamuse words API.
+  </p>
+
+  <p>
+  Only a small set of web pages can be processed by Xlufz. You an easily
+  modify the code to change this set and run your own instance of Xlufz.
+  This set currently consists of the following URL roots:
+  </p>
+  <ul>
+    <li><code>cryptics.georgeho.org</code></li>
+    <li><code>www.crosswordunclued.com</code></li>
+    <li><code>www.highlightpress.com.au</code></li>
+    <li><code>en.wikipedia.org</code></li>
+    <li><code>sphinx.mythic-beasts.com</code></li>
+  </ul>
+
+  <p>
+  Xlufz uses the excellent and versatile
+  <a href="https://www.datamuse.com/api/">Datamuse words API</a>. Please refer
+  to its documentation to see how you can modify the word selection
+  parameters to highlight words that have a certain letter pattern, or rhyme
+  with something, etc.
+  </p>
+
+</body>
+</html>

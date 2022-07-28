@@ -40,3 +40,7 @@ Xlufz uses the excellent and versatile
 Please refer to its documentation to see how you can modify the word selection
 parameters to highlight words that have a certain letter pattern, or rhyme
 with something, etc.
+
+You can serve the [`index.html`](index.html) file as a simple frontend to the
+service, if you want to use it directly instead of using it through
+[Exet](https://exet.app).
