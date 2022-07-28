@@ -1,6 +1,21 @@
 <?php
 
 /**
+ * Xlufz is simple PHP-based web service that can highlight selected words
+ * on a web page. Only certain web pages are supported (but you can modify
+ * that for your own use). Xlufz is used by the free and open source Exet
+ * (http://exet.app) web app for crossword construction, to allow setters
+ * to see cryptic indicators etc. relevant to the clue surface that they
+ * may be toying with.
+ *
+ * Word selection is done via the excellent and versatile Datamuse words
+ * API (https://www.datamuse.com/api/).
+ *
+ * You specify the web page via the "srcurl" parameter. All other parameters
+ * are passed over to the Datamuse words API for word selection.
+ */
+
+/**
  * PHP 7 does not have str_(starts,ends}_with(). We implement my_* versions.
  */
 function my_str_starts_with($haystack, $needle) {
@@ -38,14 +53,42 @@ function tokenize($text, &$tokens) {
 }
 
 /**
+ * Get an array of keys for a word/phrase.
+ */
+function get_keys($phrase) {
+  $lcPhrase = strtolower($phrase);
+  $keys = array($lcPhrase);
+
+  $l = strlen($lcPhrase);
+  $suffixes = array('ed', 's', 'ing');
+  foreach ($suffixes as $suffix) {
+    $suffixLen = strlen($suffix);
+    if (my_str_ends_with($lcPhrase, $suffix)) {
+      $key = substr($lcPhrase, 0, $l - $suffixLen);
+      if (strlen($key) > 1) {
+        array_push($keys, $key);
+      }
+      $key = substr($lcPhrase, 0, $l - $suffixLen - 1);
+      if (strlen($key) > 1) {
+        array_push($keys, $key);
+      }
+    }
+  }
+  return $keys;
+}
+
+/**
  * Populate an associative array (phraseMap) with phrases from the Datamuse
  * API output.
  */
 function makeMapOfPhrases($phrases, &$phraseMap) {
   $num = count($phrases);
   for ($i = 0; $i < $num; $i++) {
-    $phrase = strtolower($phrases[$i]['word']);
-    $phraseMap[$phrase] = 1;
+    $phrase = $phrases[$i]['word'];
+    $keys = get_keys($phrase);
+    foreach ($keys as $key) {
+      $phraseMap[$key] = 1;
+    }
   }
 }
 
@@ -53,22 +96,10 @@ function makeMapOfPhrases($phrases, &$phraseMap) {
  * Match a token in phraseMap, allow matching some variants too.
  */
 function tokenMatch($token, $phraseMap) {
-  $lcToken = strtolower($token);
-  if (array_key_exists($lcToken, $phraseMap)) {
-    return true;
-  }
-  $l = strlen($lcToken);
-  $suffixes = array('ed', 's', 'ing');
-  foreach ($suffixes as $suffix) {
-    $suffixLen = strlen($suffix);
-    if (my_str_ends_with($lcToken, $suffix)) {
-      if (array_key_exists(substr($lcToken, 0, $l - $suffixLen), $phraseMap)) {
-        return true;
-      }
-      if (array_key_exists(substr($lcToken, 0, $l - $suffixLen - 1),
-        $phraseMap)) {
-        return true;
-      }
+  $keys = get_keys($token);
+  foreach ($keys as $key) {
+    if (array_key_exists($key, $phraseMap)) {
+      return true;
     }
   }
   return false;
