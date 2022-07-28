@@ -35,11 +35,10 @@ xlufzNav = function() {
   }
   xlufzKeyword.value = xlufzKeyword.value.trim();
   if (!xlufzKeyword.value) {
-    xlufzHighlight.value = 'none';
-  } else {
-    if (xlufzHighlight.value == 'none') {
-      xlufzHighlight.value = 'ml=';
-    }
+    return;
+  }
+  if (xlufzHighlight.value == 'none') {
+    xlufzHighlight.value = 'ml=';
   }
   if (!xlufzKeyword.value || xlufzHighlight.value == 'none') {
     return;
