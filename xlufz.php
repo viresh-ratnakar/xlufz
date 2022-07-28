@@ -124,11 +124,10 @@ function markPhrasesInText($text, $phraseMap) {
 }
 
 /**
- * Apply markPhrasesInTxt() to the text portions of the input html. Also
- * insert a style element and a short right-aligned explanatory heading.
+ * Apply markPhrasesInTxt() to the text portions of the input html.
  * Do not make any modifications inside script and style tags.
  */
-function markPhrasesInHtml($html, $phrases, $datamuseUrl, $srcurl) {
+function markPhrasesInHtml($html, $phrases) {
   $markedHtml = '';
   $phraseMap = array();
   makeMapOfPhrases($phrases, $phraseMap);
@@ -169,13 +168,7 @@ function markPhrasesInHtml($html, $phrases, $datamuseUrl, $srcurl) {
         "  color: blue;\n" .
         "  font-weight: bold !important;\n" .
         "}\n" .
-        "</style>\n" .
-        "<div style=\"text-align:right;font-size:small\">" .
-        "<span class=\"xlufz\">Xlufz intersection:</span> Source: " .
-        "<a href=\"" . $srcurl . "\">" . $srcurl . "</a>: " .
-        "Highlighted words are from Datamuse API output for: " .
-        "<a href=\"" . $datamuseUrl . "\">" . $datamuseUrl . "</a>" .
-        "</div>\n";
+        "</style>\n";
       $markedHtml = $markedHtml . $xlufzHeader;
     }
   }
@@ -225,7 +218,7 @@ function xlufz() {
       $srcurl = $value;
       continue;
     }
-    $datamuseQuery = $datamuseQuery . "&" . $key . "=" . $value;
+    $datamuseQuery = $datamuseQuery . "&" . $key . "=" . urlencode($value);
   }
 
   if ($srcurl == "") {
@@ -259,7 +252,7 @@ function xlufz() {
   $phrasesJSON = fetch_url($datamuseUrl);
   $phrases = json_decode($phrasesJSON, true);
 
-  return markPhrasesInHtml($origHtml, $phrases, $datamuseUrl, $srcurl);
+  return markPhrasesInHtml($origHtml, $phrases);
 }
 
 echo xlufz();
