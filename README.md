@@ -1,6 +1,6 @@
 # Xlufz
 
-## A simple PHP script that highlights selected words in a web page.
+## A simple PHP script that highlights selected words in a web page
 
 ### Author: Viresh Ratnakar
 
