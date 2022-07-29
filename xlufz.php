@@ -54,11 +54,11 @@ function tokenize($text, &$tokens) {
 
 $xlufzStopWords = array_fill_keys(
   array(
-    'am', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'how', 'if',
-    'is', 'it', 'its', 'of', 'or', 'than', 'that', 'the', 'their', 'theirs',
-    'them', 'then', 'these', 'they', 'this', 'those', 'to', 'was', 'were',
-    'what', 'when', 'where', 'which', 'who', 'whom', 'why', 'with', 'is',
-    'that', 'had', 'on', 'for', 'were', 'was'), 1);
+    'am', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from', 'how',
+    'if', 'in', 'is', 'it', 'its', 'of', 'or', 'than', 'that', 'the', 'their',
+    'theirs', 'them', 'then', 'these', 'they', 'this', 'those', 'to', 'was',
+    'were', 'what', 'when', 'where', 'which', 'who', 'whom', 'why', 'with',
+    'is', 'that', 'had', 'on', 'for', 'were', 'was'), 1);
 
 /**
  * Add key to keys array, unless it's a stop word.
