@@ -25,7 +25,7 @@ As can be seen from the examples above, you pass the URL of the web page
 as a URLEncoded parameter named `srcurl`. All other parameters
 that you pass are used for word selection in the Datamuse words API.
 
-Only a small set of web pages can be processed by Xlufz. You an easily
+Only a small set of web pages can be processed by Xlufz. You can easily
 modify the code to change this set and run your own instance of Xlufz.
 This set currently consists of the following URL roots:
 
