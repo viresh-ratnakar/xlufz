@@ -78,8 +78,12 @@ function add_if_not_stop_word($key, &$keys) {
  * Get an array of keys for a word/phrase.
  */
 function get_keys($phrase) {
-  $lcPhrase = strtolower($phrase);
   $keys = array();
+  $lcPhrase = strtolower($phrase);
+  global $xlufzStopWords;
+  if (array_key_exists($lcPhrase, $xlufzStopWords)) {
+    return $keys;
+  }
   add_if_not_stop_word($lcPhrase, $keys);
 
   $l = strlen($lcPhrase);
