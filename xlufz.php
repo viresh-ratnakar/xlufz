@@ -52,12 +52,35 @@ function tokenize($text, &$tokens) {
   }
 }
 
+$xlufzStopWords = array_fill_keys(
+  array(
+    'am', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'how', 'if',
+    'is', 'it', 'its', 'of', 'or', 'than', 'that', 'the', 'their', 'theirs',
+    'them', 'then', 'these', 'they', 'this', 'those', 'to', 'was', 'were',
+    'what', 'when', 'where', 'which', 'who', 'whom', 'why', 'with', 'is',
+    'that', 'had', 'on', 'for', 'were', 'was'), 1);
+
+/**
+ * Add key to keys array, unless it's a stop word.
+ */
+function add_if_not_stop_word($key, &$keys) {
+  if (strlen($key) <= 1) {
+    return;
+  }
+  global $xlufzStopWords;
+  if (array_key_exists($key, $xlufzStopWords)) {
+    return;
+  }
+  array_push($keys, $key);
+}
+
 /**
  * Get an array of keys for a word/phrase.
  */
 function get_keys($phrase) {
   $lcPhrase = strtolower($phrase);
-  $keys = array($lcPhrase);
+  $keys = array();
+  add_if_not_stop_word($lcPhrase, $keys);
 
   $l = strlen($lcPhrase);
   $suffixes = array('ed', 's', 'ing');
@@ -65,13 +88,9 @@ function get_keys($phrase) {
     $suffixLen = strlen($suffix);
     if (my_str_ends_with($lcPhrase, $suffix)) {
       $key = substr($lcPhrase, 0, $l - $suffixLen);
-      if (strlen($key) > 1) {
-        array_push($keys, $key);
-      }
+      add_if_not_stop_word($key, $keys);
       $key = substr($lcPhrase, 0, $l - $suffixLen - 1);
-      if (strlen($key) > 1) {
-        array_push($keys, $key);
-      }
+      add_if_not_stop_word($key, $keys);
     }
   }
   return $keys;
