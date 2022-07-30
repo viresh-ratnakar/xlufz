@@ -112,15 +112,15 @@ xlufzMakeMenus = function() {
     {name:
         "Choose keyword's relationship to the web page's words to highlight:",
         key: "none"},
-    {name: "Highlight words related to (Datamuse API param: ml=):", key: "ml="},
-    {name: "Highlight words that often precede (Datamuse API param: rel_bgb=):", key: "rel_bgb="},
-    {name: "Highlight words that often follow (Datamuse API param: rel_bga=):", key: "rel_bga="},
-    {name: 'Highlight words from using the Datamuse API on this param=val:', key: ""},
+    {name: "Highlight words related to:", key: "ml="},
+    {name: "Highlight words that often precede:", key: "rel_bgb="},
+    {name: "Highlight words that often follow:", key: "rel_bga="},
+    {name: "Highlight words using Datamuse words API parameters:", key: ""},
   ];
   let html = '<select id="xlufz-select" onchange="xlufzNav()">';
   for (let ind of inds) {
     if (ind.name == "separator") {
-      html = html + '\n<option disabled>----------</option>'
+      html += '\n<option disabled>----------</option>'
       continue;
     }
     html = html + `
@@ -129,8 +129,11 @@ xlufzMakeMenus = function() {
   html += '</select>';
   html += '&nbsp;<select id="xlufz-highlight" onchange="xlufzNav()">';
   for (let hlt of highlighters) {
-    html = html + `
-    <option value="${hlt.key}">${hlt.name}</option>`
+    const title = (hlt.key == 'none') ? '' : ' title="Datamuse words API ' + ((hlt.key == '') ?
+                  '[param=value[&amp;p2=v2...]] directly specified in keyword' :
+                  ('param ' + hlt.key + '[keyword]')) + '"';
+    html += `
+    <option value="${hlt.key}"${title}>${hlt.name}</option>`
   }
   html += `</select>
   <input type="text" class="xlv-answer" size="15"
