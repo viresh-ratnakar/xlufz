@@ -33,7 +33,7 @@ This set currently consists of the following URL roots:
 - `www.crosswordunclued.com`
 - `www.highlightpress.com.au`
 - `en.wikipedia.org`
-- `sphinx.mythic-beasts.com`
+- `longair.net`
 
 Xlufz uses the excellent and versatile
 [Datamuse words API](https://www.datamuse.com/api/).

@@ -230,7 +230,7 @@ function xlufz() {
     "https://www.crosswordunclued.com",
     "https://www.highlightpress.com.au",
     "https://en.wikipedia.org",
-    "http://sphinx.mythic-beasts.com"
+    "https://longair.net"
   );
 
   $datamuseQuery = "";
