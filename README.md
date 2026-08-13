@@ -34,6 +34,7 @@ This set currently consists of the following URL roots:
 - `www.highlightpress.com.au`
 - `en.wikipedia.org`
 - `longair.net`
+- `clueclinic.com`
 
 Xlufz uses the excellent and versatile
 [Datamuse words API](https://www.datamuse.com/api/).

@@ -230,7 +230,8 @@ function xlufz() {
     "https://www.crosswordunclued.com",
     "https://www.highlightpress.com.au",
     "https://en.wikipedia.org",
-    "https://longair.net"
+    "https://longair.net",
+    "https://clueclinic.com"
   );
 
   $datamuseQuery = "";
